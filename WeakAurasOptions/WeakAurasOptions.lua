@@ -36,11 +36,11 @@ local collapsedOptions = {}
 local collapsed = {} -- magic value
 
 local tempGroup = {
-  id = {"tempGroup"},
+  id = { "tempGroup" },
   regionType = "group",
   controlledChildren = {},
   load = {},
-  triggers = {{}},
+  triggers = { {} },
   config = {},
   authorOptions = {},
   anchorPoint = "CENTER",
@@ -64,7 +64,7 @@ function OptionsPrivate.DuplicateAura(data, newParent, massEdit, targetIndex)
   end
 
   local new_id = base_id .. num
-  while(WeakAuras.GetData(new_id)) do
+  while (WeakAuras.GetData(new_id)) do
     new_id = base_id .. num
     num = num + 1
   end
@@ -78,7 +78,7 @@ function OptionsPrivate.DuplicateAura(data, newParent, massEdit, targetIndex)
   end
   WeakAuras.Add(newData)
   WeakAuras.NewDisplayButton(newData, massEdit)
-  if(newParent or data.parent) then
+  if (newParent or data.parent) then
     local parentId = newParent or data.parent
     local parentData = WeakAuras.GetData(parentId)
     local index
@@ -89,7 +89,7 @@ function OptionsPrivate.DuplicateAura(data, newParent, massEdit, targetIndex)
     else
       index = tIndexOf(parentData.controlledChildren, data.id) + 1
     end
-    if(index) then
+    if (index) then
       tinsert(parentData.controlledChildren, index, newData.id)
       newData.parent = parentId
       WeakAuras.Add(newData)
@@ -132,7 +132,7 @@ AceGUI:RegisterLayout("AbsoluteList", function(content, children)
 
     yOffset = yOffset - ((frame.height or frame:GetHeight() or 0) + 2);
   end
-  if(content.obj.LayoutFinished) then
+  if (content.obj.LayoutFinished) then
     content.obj:LayoutFinished(nil, yOffset * -1);
   end
 end);
@@ -162,22 +162,21 @@ AceGUI:RegisterLayout("ButtonsScrollLayout", function(content, children, skipLay
     if child.DoLayout then
       child:DoLayout()
     end
-
   end
-  if(content.obj.LayoutFinished and not skipLayoutFinished) then
+  if (content.obj.LayoutFinished and not skipLayoutFinished) then
     content.obj:LayoutFinished(nil, yOffset * -1)
   end
 end)
 
 function OptionsPrivate.MultipleDisplayTooltipDesc()
-  local desc = {{L["Multiple Displays"], L["Temporary Group"]}};
+  local desc = { { L["Multiple Displays"], L["Temporary Group"] } };
   for index, id in pairs(tempGroup.controlledChildren) do
-    desc[index + 1] = {" ", id};
+    desc[index + 1] = { " ", id };
   end
   desc[2][1] = L["Children:"]
   tinsert(desc, " ");
-  tinsert(desc, {" ", "|cFF00FFFF"..L["Right-click for more options"]});
-  tinsert(desc, {" ", "|cFF00FFFF"..L["Drag to move"]});
+  tinsert(desc, { " ", "|cFF00FFFF" .. L["Right-click for more options"] });
+  tinsert(desc, { " ", "|cFF00FFFF" .. L["Drag to move"] });
   return desc;
 end
 
@@ -192,7 +191,7 @@ loadedFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
 loadedFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
 loadedFrame:SetScript("OnEvent", function(self, event, addon)
   if (event == "ADDON_LOADED") then
-    if(addon == ADDON_NAME) then
+    if (addon == ADDON_NAME) then
       db = WeakAurasSaved;
       WeakAurasOptionsSaved = WeakAurasOptionsSaved or {};
 
@@ -220,7 +219,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       savedVars.odb = odb;
     end
   elseif (event == "PLAYER_REGEN_DISABLED") then
-    if(frame and frame:IsVisible()) then
+    if (frame and frame:IsVisible()) then
       reopenAfterCombat = true;
       WeakAuras.HideOptions();
     end
@@ -267,7 +266,7 @@ end
 
 local function CreateNewGroupFromSelection(regionType, resetChildPositions)
   local data = {
-    id = OptionsPrivate.Private.FindUnusedId(tempGroup.controlledChildren[1].." Group"),
+    id = OptionsPrivate.Private.FindUnusedId(tempGroup.controlledChildren[1] .. " Group"),
     regionType = regionType,
   };
 
@@ -321,7 +320,7 @@ local function CreateNewGroupFromSelection(regionType, resetChildPositions)
     childData.parent = data.id;
     if resetChildPositions then
       childData.xOffset = 0;
-        childData.yOffset = 0;
+      childData.yOffset = 0;
     end
     WeakAuras.Add(data);
     WeakAuras.Add(childData);
@@ -409,7 +408,7 @@ function OptionsPrivate.MultipleDisplayTooltipMenu()
   local first = true
   for _, id in pairs(tempGroup.controlledChildren) do
     local childData = WeakAuras.GetData(id);
-    if(childData and childData.controlledChildren) then
+    if (childData and childData.controlledChildren) then
       anyGroup = true;
     end
 
@@ -421,10 +420,10 @@ function OptionsPrivate.MultipleDisplayTooltipMenu()
     end
   end
 
-  if(anyGroup) then
+  if (anyGroup) then
     -- Disable "Add to New Dynamic Group"
     menu[2].notClickable = 1;
-    menu[2].text = "|cFF777777"..menu[2].text;
+    menu[2].text = "|cFF777777" .. menu[2].text;
   end
 
   -- Also disable Add to New Dynamic Group/Group if that would create
@@ -433,9 +432,9 @@ function OptionsPrivate.MultipleDisplayTooltipMenu()
     local parentData = WeakAuras.GetData(commonParent);
     if (parentData and parentData.regionType == "dynamicgroup") then
       menu[1].notClickable = 1;
-      menu[1].text = "|cFF777777"..menu[1].text;
+      menu[1].text = "|cFF777777" .. menu[1].text;
       menu[2].notClickable = 1;
-      menu[2].text = "|cFF777777"..menu[1].text;
+      menu[2].text = "|cFF777777" .. menu[1].text;
     end
   end
 
@@ -460,39 +459,40 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"] = {
 }
 
 function OptionsPrivate.IsWagoUpdateIgnored(auraId)
-    local auraData = WeakAuras.GetData(auraId)
-      if auraData then
-        for child in OptionsPrivate.Private.TraverseAll(auraData) do
-          if child.ignoreWagoUpdate then
-            return true
-          end
-        end
+  local auraData = WeakAuras.GetData(auraId)
+  if auraData then
+    for child in OptionsPrivate.Private.TraverseAll(auraData) do
+      if child.ignoreWagoUpdate then
+        return true
       end
-    return false
+    end
+  end
+  return false
 end
 
 function OptionsPrivate.HasWagoUrl(auraId)
   local auraData = WeakAuras.GetData(auraId)
-    if auraData then
-      for child in OptionsPrivate.Private.TraverseAll(auraData) do
-        if child.url and child.url ~= "" then
-          return true
-        end
+  if auraData then
+    for child in OptionsPrivate.Private.TraverseAll(auraData) do
+      if child.url and child.url ~= "" then
+        return true
       end
     end
+  end
   return false
 end
 
 function OptionsPrivate.ConfirmDelete(toDelete, parents)
   if toDelete then
-    local warningForm = L["You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"]
+    local warningForm = L
+        ["You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"]
     StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"].text = warningForm:format(#toDelete)
-    StaticPopup_Show("WEAKAURAS_CONFIRM_DELETE", "", "", {toDelete = toDelete, parents = parents})
+    StaticPopup_Show("WEAKAURAS_CONFIRM_DELETE", "", "", { toDelete = toDelete, parents = parents })
   end
 end
 
 local function AfterScanForLoads()
-  if(frame) then
+  if (frame) then
     if (frame:IsVisible()) then
       OptionsPrivate.SortDisplayButtons(nil, true);
     else
@@ -503,14 +503,14 @@ end
 
 local function OnAboutToDelete(event, uid, id, parentUid, parentId)
   local data = OptionsPrivate.Private.GetDataByUID(uid)
-  if(data.controlledChildren) then
+  if (data.controlledChildren) then
     for index, childId in pairs(data.controlledChildren) do
       local childButton = displayButtons[childId];
-      if(childButton) then
+      if (childButton) then
         childButton:SetGroup();
       end
       local childData = db.displays[childId];
-      if(childData) then
+      if (childData) then
         childData.parent = nil;
       end
     end
@@ -521,7 +521,7 @@ local function OnAboutToDelete(event, uid, id, parentUid, parentId)
 
   frame:ClearPicks();
 
-  if(displayButtons[id])then
+  if (displayButtons[id]) then
     frame.buttonsScroll:DeleteChild(displayButtons[id]);
     displayButtons[id] = nil;
   end
@@ -542,7 +542,7 @@ local function OnRename(event, uid, oldid, newid)
   collapsedOptions[newid] = collapsedOptions[oldid]
   collapsedOptions[oldid] = nil
 
-  if(data.controlledChildren) then
+  if (data.controlledChildren) then
     for _, childId in pairs(data.controlledChildren) do
       OptionsPrivate.displayButtons[childId]:SetGroup(newid)
     end
@@ -564,7 +564,7 @@ local function OnRename(event, uid, oldid, newid)
 end
 
 local function OptionsFrame()
-  if(frame) then
+  if (frame) then
     return frame
   else
     return nil
@@ -604,7 +604,7 @@ if not WeakAuras.ToggleOptions then
       OptionsPrivate.Private.OpenUpdate = OptionsPrivate.OpenUpdate
     end
 
-    if(frame and frame:IsVisible()) then
+    if (frame and frame:IsVisible()) then
       WeakAuras.HideOptions();
     elseif (InCombatLockdown()) then
       WeakAuras.prettyPrint(L["Options will open after combat ends."])
@@ -616,13 +616,13 @@ if not WeakAuras.ToggleOptions then
 end
 
 function WeakAuras.HideOptions()
-  if(frame) then
+  if (frame) then
     frame:Hide()
   end
 end
 
 function WeakAuras.IsOptionsOpen()
-  if(frame and frame:IsVisible()) then
+  if (frame and frame:IsVisible()) then
     return true;
   else
     return false;
@@ -631,9 +631,9 @@ end
 
 local function EnsureDisplayButton(data)
   local id = data.id;
-  if not(displayButtons[id]) then
+  if not (displayButtons[id]) then
     displayButtons[id] = AceGUI:Create("WeakAurasDisplayButton");
-    if(displayButtons[id]) then
+    if (displayButtons[id]) then
       displayButtons[id]:SetData(data);
       displayButtons[id]:Initialize();
       displayButtons[id]:UpdateWarning()
@@ -647,9 +647,9 @@ local function GetSortedOptionsLists()
   local loadedSorted, unloadedSorted = {}, {};
   local to_sort = {};
   for id, data in pairs(db.displays) do
-    if(data.parent) then
-    -- Do nothing; children will be added later
-  elseif(OptionsPrivate.Private.loaded[id]) then
+    if (data.parent) then
+      -- Do nothing; children will be added later
+    elseif (OptionsPrivate.Private.loaded[id]) then
       tinsert(to_sort, id);
     end
   end
@@ -663,9 +663,9 @@ local function GetSortedOptionsLists()
 
   wipe(to_sort);
   for id, data in pairs(db.displays) do
-    if(data.parent) then
-    -- Do nothing; children will be added later
-    elseif not(OptionsPrivate.Private.loaded[id]) then
+    if (data.parent) then
+      -- Do nothing; children will be added later
+    elseif not (OptionsPrivate.Private.loaded[id]) then
       tinsert(to_sort, id);
     end
   end
@@ -682,7 +682,7 @@ end
 
 local function LayoutDisplayButtons(msg)
   local total = 0;
-  for _,_ in pairs(db.displays) do
+  for _, _ in pairs(db.displays) do
     total = total + 1;
   end
 
@@ -700,7 +700,7 @@ local function LayoutDisplayButtons(msg)
     local num = frame.loadProgressNum or 0;
     for _, id in pairs(unloadedSorted) do
       local data = WeakAuras.GetData(id);
-      if(data) then
+      if (data) then
         EnsureDisplayButton(data);
         WeakAuras.UpdateThumbnail(data);
 
@@ -714,7 +714,7 @@ local function LayoutDisplayButtons(msg)
 
         num = num + 1;
       end
-      frame.loadProgress:SetText(L["Creating buttons: "]..num.."/"..total);
+      frame.loadProgress:SetText(L["Creating buttons: "] .. num .. "/" .. total);
       frame.loadProgressNum = num;
       coroutine.yield();
     end
@@ -744,7 +744,7 @@ local function LayoutDisplayButtons(msg)
     frame.buttonsScroll:PauseLayout()
     for _, id in pairs(loadedSorted) do
       local data = WeakAuras.GetData(id);
-      if(data) then
+      if (data) then
         EnsureDisplayButton(data);
         WeakAuras.UpdateThumbnail(data);
 
@@ -759,7 +759,7 @@ local function LayoutDisplayButtons(msg)
         frame.buttonsScroll:PauseLayout()
       end
 
-      frame.loadProgress:SetText(L["Creating buttons: "]..num.."/"..total);
+      frame.loadProgress:SetText(L["Creating buttons: "] .. num .. "/" .. total);
       frame.loadProgressNum = num;
       coroutine.yield();
     end
@@ -778,17 +778,17 @@ function OptionsPrivate.DeleteAuras(auras, parents)
     local num = 0
     local total = 0
     for _, auraData in pairs(auras) do
-      total = total +1
+      total = total + 1
     end
 
-    frame.loadProgress:SetText(L["Deleting auras: "]..num.."/"..total)
+    frame.loadProgress:SetText(L["Deleting auras: "] .. num .. "/" .. total)
 
     local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
     OptionsPrivate.massDelete = true
     for _, auraData in pairs(auras) do
       WeakAuras.Delete(auraData)
-      num = num +1
-      frame.loadProgress:SetText(L["Deleting auras: "]..num.."/"..total)
+      num = num + 1
+      frame.loadProgress:SetText(L["Deleting auras: "] .. num .. "/" .. total)
       coroutine.yield()
     end
     OptionsPrivate.massDelete = false
@@ -798,7 +798,7 @@ function OptionsPrivate.DeleteAuras(auras, parents)
         local parentData = WeakAuras.GetData(id)
         local parentButton = OptionsPrivate.GetDisplayButton(id)
         WeakAuras.UpdateGroupOrders(parentData)
-        if(#parentData.controlledChildren == 0) then
+        if (#parentData.controlledChildren == 0) then
           parentButton:DisableExpand()
         else
           parentButton:EnableExpand()
@@ -822,7 +822,7 @@ function OptionsPrivate.DeleteAuras(auras, parents)
 end
 
 function WeakAuras.ShowOptions(msg)
-  local firstLoad = not(frame);
+  local firstLoad = not (frame);
   OptionsPrivate.Private.Pause();
   OptionsPrivate.Private.SetFakeStates()
 
@@ -864,7 +864,7 @@ function WeakAuras.ShowOptions(msg)
     frame.moversizer:OptionsOpened()
   end
 
-  if not(firstLoad) then
+  if not (firstLoad) then
     -- Show what was last shown
     local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
     for id, button in pairs(displayButtons) do
@@ -876,7 +876,7 @@ function WeakAuras.ShowOptions(msg)
   if (frame.pickedDisplay) then
     if (OptionsPrivate.IsPickedMultiple()) then
       local children = {}
-      for k,v in pairs(tempGroup.controlledChildren) do
+      for k, v in pairs(tempGroup.controlledChildren) do
         children[k] = v
       end
       frame:PickDisplayBatch(children);
@@ -897,7 +897,6 @@ function WeakAuras.ShowOptions(msg)
   if firstLoad then
     frame:ShowTip()
   end
-
 end
 
 function OptionsPrivate.UpdateOptions()
@@ -971,7 +970,7 @@ end
 
 function WeakAuras.NewDisplayButton(data, massEdit)
   local id = data.id;
-  OptionsPrivate.Private.ScanForLoads({[id] = true});
+  OptionsPrivate.Private.ScanForLoads({ [id] = true });
   EnsureDisplayButton(db.displays[id]);
   WeakAuras.UpdateThumbnail(db.displays[id]);
   frame.buttonsScroll:AddChild(displayButtons[id]);
@@ -981,7 +980,7 @@ function WeakAuras.NewDisplayButton(data, massEdit)
 end
 
 function WeakAuras.UpdateGroupOrders(data)
-  if(data.controlledChildren) then
+  if (data.controlledChildren) then
     local total = #data.controlledChildren;
     for index, id in pairs(data.controlledChildren) do
       local button = OptionsPrivate.GetDisplayButton(id);
@@ -1022,10 +1021,10 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
 
   local recenter = false;
   filter = filter or (overrideReset and previousFilter or "");
-  if(frame.filterInput:GetText() ~= filter) then
+  if (frame.filterInput:GetText() ~= filter) then
     frame.filterInput:SetText(filter);
   end
-  if(previousFilter and previousFilter ~= "" and (filter == "" or not filter)) then
+  if (previousFilter and previousFilter ~= "" and (filter == "" or not filter)) then
     recenter = true;
   end
   previousFilter = filter;
@@ -1190,7 +1189,7 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
 
     if useTextFilter then
       for _, word in ipairs(filterTable) do
-        if(id:lower():find(word, 1, true)) then
+        if (id:lower():find(word, 1, true)) then
           aurasMatchingFilter[id] = true
           for parent in OptionsPrivate.Private.TraverseParents(child.data) do
             aurasMatchingFilter[parent.id] = true
@@ -1246,7 +1245,7 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
   end
 
   for _, child in pairs(displayButtons) do
-    if(not visible[child]) then
+    if (not visible[child]) then
       child.frame:Hide();
       if child.ReleaseThumbnail then
         child:ReleaseThumbnail()
@@ -1255,14 +1254,13 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
   end
 
   frame.buttonsScroll:DoLayout();
-  if(recenter) then
+  if (recenter) then
     frame:CenterOnPicked();
   end
 end
 
-
 function OptionsPrivate.IsPickedMultiple()
-  if(frame.pickedDisplay == tempGroup) then
+  if (frame.pickedDisplay == tempGroup) then
     return true;
   else
     return false;
@@ -1270,9 +1268,9 @@ function OptionsPrivate.IsPickedMultiple()
 end
 
 function OptionsPrivate.IsDisplayPicked(id)
-  if(frame.pickedDisplay == tempGroup) then
+  if (frame.pickedDisplay == tempGroup) then
     for child in OptionsPrivate.Private.TraverseLeafs(tempGroup) do
-      if(id == child.id) then
+      if (id == child.id) then
         return true;
       end
     end
@@ -1377,7 +1375,7 @@ function OptionsPrivate.PickDisplayMultipleShift(target)
 end
 
 function OptionsPrivate.GetDisplayButton(id)
-  if(id and displayButtons[id]) then
+  if (id and displayButtons[id]) then
     return displayButtons[id];
   end
 end
@@ -1418,10 +1416,10 @@ function OptionsPrivate.StartGrouping(data)
     end
 
     for id, button in pairs(displayButtons) do
-      button:StartGrouping({data.id},
-                           data.id == id,
-                           data.regionType == "dynamicgroup" or data.regionType == "group",
-                           children[id]);
+      button:StartGrouping({ data.id },
+        data.id == id,
+        data.regionType == "dynamicgroup" or data.regionType == "group",
+        children[id]);
     end
   end
 end
@@ -1473,7 +1471,7 @@ local function CompareButtonOrder(a, b)
   local aNode = a.data.id
   local lastAParent = aNode
 
-  while(aNode) do
+  while (aNode) do
     local parent = WeakAuras.GetData(aNode).parent
     if (parent) then
       parents[parent] = aNode
@@ -1485,7 +1483,7 @@ local function CompareButtonOrder(a, b)
   local bNode = b.data.id
   local lastBParent = bNode
 
-  while(bNode) do
+  while (bNode) do
     local parent = WeakAuras.GetData(bNode).parent
     if parent then
       if (parents[parent]) then
@@ -1524,7 +1522,7 @@ function OptionsPrivate.Drop(mainAura, target, action, area)
         total = total + 1
       end
     end
-    frame.loadProgress:SetText(L["Moving auras: "]..num.."/"..total)
+    frame.loadProgress:SetText(L["Moving auras: "] .. num .. "/" .. total)
 
     local mode = ""
     if (frame.pickedDisplay == tempGroup and #tempGroup.controlledChildren > 0) then
@@ -1541,7 +1539,7 @@ function OptionsPrivate.Drop(mainAura, target, action, area)
       if button:IsDragging() then
         tinsert(buttonsToSort, button)
         num = num + 1
-        frame.loadProgress:SetText(L["Preparing auras: "]..num.."/"..total)
+        frame.loadProgress:SetText(L["Preparing auras: "] .. num .. "/" .. total)
       else
         button:Drop(mode, mainAura, target, action);
       end
@@ -1549,7 +1547,7 @@ function OptionsPrivate.Drop(mainAura, target, action, area)
     end
 
     num = 0
-    frame.loadProgress:SetText(L["Moving auras: "]..num.."/"..total)
+    frame.loadProgress:SetText(L["Moving auras: "] .. num .. "/" .. total)
     if mode == "MULTI" then
       -- If we are dragging and dropping multiple auras at once, the order in which we drop is important
       -- We want to preserve the top-down order
@@ -1566,7 +1564,7 @@ function OptionsPrivate.Drop(mainAura, target, action, area)
     for _, button in ipairs(buttonsToSort) do
       button:Drop(mode, mainAura, target, action)
       num = num + 1
-      frame.loadProgress:SetText(L["Moving auras: "]..num.."/"..total)
+      frame.loadProgress:SetText(L["Moving auras: "] .. num .. "/" .. total)
       coroutine.yield()
     end
 
@@ -1681,7 +1679,6 @@ function OptionsPrivate.DropIndicator()
         self.lineTexture:Hide()
       end
     end
-
   end
   return indicator
 end
@@ -1696,7 +1693,7 @@ function WeakAuras.UpdateThumbnail(data)
 end
 
 function OptionsPrivate.OpenTexturePicker(baseObject, paths, properties, textures, SetTextureFunc, adjustSize)
-   OptionsPrivate.TexturePicker(frame):Open(baseObject, paths, properties, textures, SetTextureFunc, adjustSize)
+  OptionsPrivate.TexturePicker(frame):Open(baseObject, paths, properties, textures, SetTextureFunc, adjustSize)
 end
 
 function OptionsPrivate.OpenIconPicker(baseObject, paths, groupIcon)
@@ -1704,9 +1701,9 @@ function OptionsPrivate.OpenIconPicker(baseObject, paths, groupIcon)
 end
 
 function OptionsPrivate.OpenModelPicker(baseObject, path)
-  if not(C_AddOns.IsAddOnLoaded("WeakAurasModelPaths")) then
+  if not (C_AddOns.IsAddOnLoaded("WeakAurasModelPaths")) then
     local loaded, reason = C_AddOns.LoadAddOn("WeakAurasModelPaths");
-    if not(loaded) then
+    if not (loaded) then
       reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
       WeakAuras.prettyPrint(string.format(L["ModelPaths could not be loaded, the addon is %s"], reason));
       WeakAuras.ModelPaths = {};
@@ -1721,9 +1718,9 @@ function OptionsPrivate.OpenCodeReview(data)
 end
 
 function OptionsPrivate.OpenTriggerTemplate(data, targetId)
-  if not(C_AddOns.IsAddOnLoaded("WeakAurasTemplates")) then
+  if not (C_AddOns.IsAddOnLoaded("WeakAurasTemplates")) then
     local loaded, reason = C_AddOns.LoadAddOn("WeakAurasTemplates");
-    if not(loaded) then
+    if not (loaded) then
       reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
       WeakAuras.prettyPrint(string.format(L["Templates could not be loaded, the addon is %s"], reason));
       return;
@@ -1740,15 +1737,15 @@ OptionsPrivate.currentDynamicTextInput = false;
 
 local BaseDynamicTextCodes = {
   trigger = {
-    {type = "mini", name = "p", desc = L["Progress - The remaining time of a timer, or a non-timer value"]},
-    {type = "mini", name = "t", desc = L["Total - The maximum duration of a timer, or a maximum non-timer value"]},
-    {type = "mini", name = "n", desc = L["Name - The name of the display (usually an aura name), or the display's ID if there is no dynamic name"]},
-    {type = "mini", name = "i", desc = L["Icon - The icon associated with the display"]},
-    {type = "mini", name = "s", desc = L["Stacks - The number of stacks of an aura (usually)"]},
+    { type = "mini", name = "p", desc = L["Progress - The remaining time of a timer, or a non-timer value"] },
+    { type = "mini", name = "t", desc = L["Total - The maximum duration of a timer, or a maximum non-timer value"] },
+    { type = "mini", name = "n", desc = L["Name - The name of the display (usually an aura name), or the display's ID if there is no dynamic name"] },
+    { type = "mini", name = "i", desc = L["Icon - The icon associated with the display"] },
+    { type = "mini", name = "s", desc = L["Stacks - The number of stacks of an aura (usually)"] },
   },
   global = {
-    {type = "mini", name = "c", desc = L["Custom - Allows you to define a custom Lua function that returns a list of string values. %c1 will be replaced by the first value returned, %c2 by the second, etc."]},
-    {type = "mini", name = "%", desc = L["% - To show a percent sign"]},
+    { type = "mini", name = "c", desc = L["Custom - Allows you to define a custom Lua function that returns a list of string values. %c1 will be replaced by the first value returned, %c2 by the second, etc."] },
+    { type = "mini", name = "%", desc = L["% - To show a percent sign"] },
   }
 }
 
@@ -1759,9 +1756,10 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
   local sortedProps = {}
 
   -- Add global header and markers
-  table.insert(sortedProps, {type = "header", triggerNum = 0, name = "Global Properties"})
+  table.insert(sortedProps, { type = "header", triggerNum = 0, name = "Global Properties" })
   for index, icon in ipairs(ICON_LIST) do
-    table.insert(sortedProps, {type = "marker", triggerNum = 0, name = "{rt"..index.."}", desc = icon..":0|t", widthFraction = #ICON_LIST})
+    table.insert(sortedProps,
+      { type = "marker", triggerNum = 0, name = "{rt" .. index .. "}", desc = icon .. ":0|t", widthFraction = #ICON_LIST })
   end
 
   -- Add base dynamic text codes
@@ -1782,7 +1780,7 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
 
       -- Add the properties to the temporary table
       for name, data in pairs(triggerProps) do
-        table.insert(tempProps, {triggerNum = triggerNum, name = name, desc = data.display})
+        table.insert(tempProps, { triggerNum = triggerNum, name = name, desc = data.display })
       end
 
       -- Sort the temporary table by name
@@ -1791,7 +1789,8 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
       end)
 
       -- Add a header for the trigger
-      table.insert(sortedProps, {type = "header", triggerNum = triggerNum, name = OptionsPrivate.GetTriggerTitle(data, triggerNum)})
+      table.insert(sortedProps,
+        { type = "header", triggerNum = triggerNum, name = OptionsPrivate.GetTriggerTitle(data, triggerNum) })
 
       -- Add the base properties for the trigger
       for _, v in ipairs(BaseDynamicTextCodes.trigger) do
@@ -1835,7 +1834,7 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
         button:SetTitle(string.format("|cFFFFCC00%s|r%s", propPrefix, prop.name))
       end
       if prop.type == "mini" or prop.type == "marker" then
-        button:SetRelativeWidth((1/prop.widthFraction) - 1e-10)
+        button:SetRelativeWidth((1 / prop.widthFraction) - 1e-10)
       else
         button:SetRelativeWidth(1)
       end
@@ -1856,8 +1855,12 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
             tooltip:AddLine("\n")
             tooltip:AddLine(
               prop.triggerNum > 0
-              and L["The trigger number is optional. When no trigger number is specified, the trigger selected via dynamic information will be used."]
-              or L["By default this shows the information from the trigger selected via dynamic information. The information from a specific trigger can be shown via e.g. %2.p."],
+              and
+              L
+              ["The trigger number is optional. When no trigger number is specified, the trigger selected via dynamic information will be used."]
+              or
+              L
+              ["By default this shows the information from the trigger selected via dynamic information. The information from a specific trigger can be shown via e.g. %2.p."],
               0.8, 0.8, 0.8,
               true)
           end
@@ -1902,7 +1905,7 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
 end
 
 function OptionsPrivate.ResetMoverSizer()
-  if(frame and frame.mover and frame.moversizer and frame.mover.moving.region and frame.mover.moving.data) then
+  if (frame and frame.mover and frame.moversizer and frame.mover.moving.region and frame.mover.moving.data) then
     frame.moversizer:SetToRegion(frame.mover.moving.region, frame.mover.moving.data);
   end
 end
@@ -1939,7 +1942,7 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
     return t and k and v and t[k] == v
   end
   local new_id = OptionsPrivate.Private.FindUnusedId("New")
-  local data = {id = new_id, regionType = regionType, uid = WeakAuras.GenerateUniqueID()}
+  local data = { id = new_id, regionType = regionType, uid = WeakAuras.GenerateUniqueID() }
   WeakAuras.DeepMixin(data, OptionsPrivate.Private.data_stub);
   if (sourceData) then
     WeakAuras.DeepMixin(data, sourceData);
@@ -1993,7 +1996,8 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
         OptionsPrivate.PickAndEditDisplay(data.id);
       end
     else
-      error(string.format("Calling 'WeakAuras.NewAura' with invalid groupId %s. Reload your UI to fix the display list.", targetId))
+      error(string.format("Calling 'WeakAuras.NewAura' with invalid groupId %s. Reload your UI to fix the display list.",
+        targetId))
     end
   else
     -- move source into the top-level list
@@ -2002,7 +2006,6 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
     OptionsPrivate.PickAndEditDisplay(data.id);
   end
 end
-
 
 function OptionsPrivate.ResetCollapsed(id, namespace)
   if id then
@@ -2059,7 +2062,7 @@ function OptionsPrivate.MoveCollapseDataUp(id, namespace, path)
   collapsedOptions[id][namespace] = collapsedOptions[id][namespace] or {}
   if type(path) ~= "table" then
     collapsedOptions[id][namespace][path], collapsedOptions[id][namespace][path - 1]
-      = collapsedOptions[id][namespace][path - 1], collapsedOptions[id][namespace][path]
+    = collapsedOptions[id][namespace][path - 1], collapsedOptions[id][namespace][path]
   else
     local tmp = collapsedOptions[id][namespace]
     local lastKey = tremove(path)
@@ -2076,7 +2079,7 @@ function OptionsPrivate.MoveCollapseDataDown(id, namespace, path)
   collapsedOptions[id][namespace] = collapsedOptions[id][namespace] or {}
   if type(path) ~= "table" then
     collapsedOptions[id][namespace][path], collapsedOptions[id][namespace][path + 1]
-      = collapsedOptions[id][namespace][path + 1], collapsedOptions[id][namespace][path]
+    = collapsedOptions[id][namespace][path + 1], collapsedOptions[id][namespace][path]
   else
     local tmp = collapsedOptions[id][namespace]
     local lastKey = tremove(path)
@@ -2147,7 +2150,7 @@ function OptionsPrivate.InsertCollapsed(id, namespace, path, value)
       data[i + 1] = data[i]
     end
   end
-  data[insertPoint] = {[collapsed] = value}
+  data[insertPoint] = { [collapsed] = value }
 end
 
 function OptionsPrivate.DuplicateCollapseData(id, namespace, path)
@@ -2175,7 +2178,7 @@ function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, h
                                             withoutColor, index, total)
   local headerOption
   if withHeader and (not index or index == 1) then
-    headerOption =  {
+    headerOption = {
       type = "execute",
       control = "WeakAurasExpandSmall",
       name = L["|cffffcc00Format Options|r"],
@@ -2242,16 +2245,16 @@ function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, h
 
   if withHeader and (not index or index == total) then
     addOption("header_anchor",
-    {
-      type = "description",
-      name = "",
-      control = "WeakAurasExpandAnchor",
-      arg = {
-        expanderName = tostring(addOption)
+      {
+        type = "description",
+        name = "",
+        control = "WeakAurasExpandAnchor",
+        arg = {
+          expanderName = tostring(addOption)
+        }
       }
-    }
 
-  )
+    )
   end
 
   if not next(seenSymbols) and headerOption and not index then

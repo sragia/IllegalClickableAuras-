@@ -2,10 +2,10 @@
 local AddonName = ...
 ---@class Private
 local Private = select(2, ...)
-
+print('2')
 Private.Features:Register({
   id = "undo",
-  autoEnable = {"dev", "pr", "alpha"},
+  autoEnable = { "dev", "pr", "alpha" },
   enabled = true,
   persist = true,
 })
@@ -114,6 +114,7 @@ function TimeMachine:RegisterAction(actionType, actor, inverter, autoEffects)
     autoEffects = autoEffects,
   }
 end
+
 TimeMachine:RegisterAction("none",
   function(_data, _path)
   end,
@@ -131,7 +132,7 @@ TimeMachine:RegisterAction("set",
     local tbl, key = resolveKey(data, path)
     return 'set', path, copy(tbl, key)
   end,
-  {"add", "options_cu"}
+  { "add", "options_cu" }
 )
 
 TimeMachine:RegisterAction("setmany",
@@ -149,7 +150,7 @@ TimeMachine:RegisterAction("setmany",
     end
     return 'setmany', path, inverse
   end,
-  {"add", "options_cu"}
+  { "add", "options_cu" }
 )
 
 TimeMachine:RegisterAction("insert",
@@ -164,7 +165,7 @@ TimeMachine:RegisterAction("insert",
   function(data, path, payload)
     return 'remove', path, payload.index
   end,
-  {"add", "options_cu"}
+  { "add", "options_cu" }
 )
 
 TimeMachine:RegisterAction("remove",
@@ -178,9 +179,9 @@ TimeMachine:RegisterAction("remove",
   end,
   function(data, path, payload)
     local tbl, key = resolveKey(data, path)
-    return 'insert', path, {index = payload, value = copy(tbl[key], payload or #tbl[key])}
+    return 'insert', path, { index = payload, value = copy(tbl[key], payload or #tbl[key]) }
   end,
-  {"add", "options_cu"}
+  { "add", "options_cu" }
 )
 
 TimeMachine:RegisterAction("swap",
@@ -189,9 +190,9 @@ TimeMachine:RegisterAction("swap",
     tbl[key][payload[1]], tbl[key][payload[2]] = tbl[key][payload[2]], tbl[key][payload[1]]
   end,
   function(data, path, payload)
-    return 'swap', path, {payload[2], payload[1]}
+    return 'swap', path, { payload[2], payload[1] }
   end,
-  {"add", "options_cu"}
+  { "add", "options_cu" }
 )
 
 TimeMachine:RegisterAction("move",
@@ -201,9 +202,9 @@ TimeMachine:RegisterAction("move",
     table.insert(tbl[key], payload[2], value)
   end,
   function(data, path, payload)
-    return 'move', path, {payload[2], payload[1]}
+    return 'move', path, { payload[2], payload[1] }
   end,
-  {"add", "options_cu"}
+  { "add", "options_cu" }
 )
 
 ---@param path keyPath
@@ -226,7 +227,8 @@ end
 
 function TimeMachine:StartTransaction()
   if self.transaction then
-    WeakAuras.prettyPrint("If you're reading this, a time machine transaction was started, but there was already one in  progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
+    WeakAuras.prettyPrint(
+    "If you're reading this, a time machine transaction was started, but there was already one in  progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
     self:Reject()
   end
   self.transaction = true
@@ -235,7 +237,8 @@ end
 ---@param record actionRecord
 function TimeMachine:Append(record)
   local action = self.actions[record.actionType]
-  Private.DebugPrint("Forward action", record.actionType, "for", record.uid, "at", keyPathToString(record.path), "with", record.payload)
+  Private.DebugPrint("Forward action", record.actionType, "for", record.uid, "at", keyPathToString(record.path), "with",
+    record.payload)
   if not action then
     error("No action for actionType: " .. record.actionType)
   end
@@ -287,7 +290,8 @@ end
 ---@param instant? boolean
 function TimeMachine:Commit(instant)
   if not self.transaction and not instant then
-    WeakAuras.prettyPrint("If you're reading this, a time machine transaction was committed, but there was no transaction in progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
+    WeakAuras.prettyPrint(
+    "If you're reading this, a time machine transaction was committed, but there was no transaction in progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
     return
   end
   while self.index < #self.changes do
@@ -371,11 +375,14 @@ end
 ---@param id string
 function TimeMachine:DestroyTheUniverse(id)
   if self.transaction then
-    WeakAuras.prettyPrint("If you're reading this, a time machine transaction was destroyed, but there was one in progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
+    WeakAuras.prettyPrint(
+    "If you're reading this, a time machine transaction was destroyed, but there was one in progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
     self:Reject()
   end
   if #self.changes > 0 then
-    Private.DebugPrint(string.format("Destroying the universe where %i change(s) happpened, because an unexpected change happened to %q.", #self.changes, id))
+    Private.DebugPrint(string.format(
+    "Destroying the universe where %i change(s) happpened, because an unexpected change happened to %q.", #self.changes,
+      id))
   end
   self.changes = {}
   self.index = 0

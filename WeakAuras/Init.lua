@@ -426,6 +426,7 @@ WeakAuras.BuildInfo = select(4, GetBuildInfo())
 function WeakAuras.IsClassicEra()
   return flavor == 1
 end
+
 -- save compatibility with old auras
 WeakAuras.IsClassic = WeakAuras.IsClassicEra
 
@@ -555,7 +556,6 @@ do
     "LibSharedMedia-3.0",
     "LibDataBroker-1.1",
     "LibCompress",
-    "SpellRange-1.0",
     "LibCustomGlow-1.0",
     "LibDBIcon-1.0",
     "LibGetFrame-1.0",
@@ -596,16 +596,16 @@ do
   end
   for _, lib in ipairs(StandAloneLibs) do
     if not lib then
-        libsAreOk = false
-        WeakAuras.prettyPrint("Missing library:", lib)
+      libsAreOk = false
+      WeakAuras.prettyPrint("Missing library:", lib)
     end
   end
   if LibStub then
     for _, lib in ipairs(LibStubLibs) do
-        if not LibStub:GetLibrary(lib, true) then
-          libsAreOk = false
-          WeakAuras.prettyPrint("Missing library:", lib)
-        end
+      if not LibStub:GetLibrary(lib, true) then
+        libsAreOk = false
+        WeakAuras.prettyPrint("Missing library:", lib)
+      end
     end
   else
     libsAreOk = false
@@ -624,23 +624,19 @@ end
 
 if WeakAuras.IsWrathClassic() then
   C_Timer.After(1, function()
-    WeakAuras.prettyPrint("This version of WeakAuras is provided as is. We are unable to test it ourselves on CN Servers.")
+    WeakAuras.prettyPrint(
+      "This version of WeakAuras is provided as is. We are unable to test it ourselves on CN Servers.")
   end)
-elseif WeakAuras.IsMidnight() then
-  C_Timer.After(1, function()
-    WeakAuras.prettyPrint("WeakAuras does not support Midnight due to Blizzard restricting addons. Read more at https://patreon.com/WeakAuras")
-  end)
-  libsAreOk = false
 end
 
 -- These function stubs are defined here to reduce the number of errors that occur if WeakAuras.lua fails to compile
 --- @type fun(regionType: string, createFunction: function, modifyFunction: function, defaults: table, properties: table|function|nil, validate: function?))
-function Private.RegisterRegionType(_, _, _ ,_)
+function Private.RegisterRegionType(_, _, _, _)
 end
 
 ---@type fun(regionType: string, createOptions: function, icon: string|function, displayName: string, createThumbnail: function?, modifyThumbnail: function?, description: string?, templates: table?, getAnchors: function?)
 ---@diagnostic disable-next-line: duplicate-set-field
-function Private.RegisterRegionOptions(_, _ , _ ,_ )
+function Private.RegisterRegionOptions(_, _, _, _)
 end
 
 function Private.StartProfileSystem(_)
@@ -683,4 +679,3 @@ function WeakAuras.CountWagoUpdates()
   -- XXX this is to work around the Companion app trying to use our stuff!
   return 0
 end
-

@@ -1,31 +1,31 @@
 if not WeakAuras.IsLibsOK() then return end
 ---@type string
-local AddonName = ...
+local AddonName                                              = ...
 ---@class OptionsPrivate
-local OptionsPrivate = select(2, ...)
+local OptionsPrivate                                         = select(2, ...)
 
 -- Lua APIs
-local tinsert, tremove, wipe = table.insert, table.remove, wipe
-local pairs, type, error = pairs, type, error
-local _G = _G
+local tinsert, tremove, wipe                                 = table.insert, table.remove, wipe
+local pairs, type, error                                     = pairs, type, error
+local _G                                                     = _G
 
 -- WoW APIs
 local GetScreenWidth, GetScreenHeight, CreateFrame, UnitName
-  = GetScreenWidth, GetScreenHeight, CreateFrame, UnitName
+                                                             = GetScreenWidth, GetScreenHeight, CreateFrame, UnitName
 
-local AceGUI = LibStub("AceGUI-3.0")
-local AceConfigDialog = LibStub("AceConfigDialog-3.0")
-local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
-local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
-local SharedMedia = LibStub("LibSharedMedia-3.0")
+local AceGUI                                                 = LibStub("AceGUI-3.0")
+local AceConfigDialog                                        = LibStub("AceConfigDialog-3.0")
+local AceConfigRegistry                                      = LibStub("AceConfigRegistry-3.0")
+local LibDD                                                  = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
+local SharedMedia                                            = LibStub("LibSharedMedia-3.0")
 
 ---@class WeakAuras
-local WeakAuras = WeakAuras
-local L = WeakAuras.L
+local WeakAuras                                              = WeakAuras
+local L                                                      = WeakAuras.L
 
-local displayButtons = OptionsPrivate.displayButtons
-local tempGroup = OptionsPrivate.tempGroup
-local aceOptions = {}
+local displayButtons                                         = OptionsPrivate.displayButtons
+local tempGroup                                              = OptionsPrivate.tempGroup
+local aceOptions                                             = {}
 
 local function CreateFrameSizer(frame, callback, position)
   callback = callback or (function() end)
@@ -104,10 +104,10 @@ function OptionsPrivate.CreateFrame()
   local color = CreateColorFromHexString("ff1f1e21") -- PANEL_BACKGROUND_COLOR
   local r, g, b = color:GetRGB()
   frame.Bg:SetColorTexture(r, g, b, 0.8)
-  frame.Bg.colorTexture = {r, g, b, 0.8}
+  frame.Bg.colorTexture = { r, g, b, 0.8 }
 
   function OptionsPrivate.SetTitle(title)
-    local text = "WeakAuras " .. WeakAuras.versionString
+    local text = "|cffb60000mid|rAuras " .. WeakAuras.versionString
     if title and title ~= "" then
       text = ("%s - %s"):format(text, title)
     end
@@ -123,8 +123,8 @@ function OptionsPrivate.CreateFrame()
   -- Workaround classic issue
 
   local serverTime = C_DateAndTime.GetServerTimeLocal()
-  if serverTime >= 1748736000 -- June 1.
-     and serverTime <= 1751328000 -- July 1.
+  if serverTime >= 1748736000      -- June 1.
+      and serverTime <= 1751328000 -- July 1.
   then
     WeakAurasOptionsPortrait:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round_pride.tga]])
   else
@@ -186,7 +186,7 @@ function OptionsPrivate.CreateFrame()
       OptionsPrivate.Private.personalRessourceDisplayFrame:OptionsClosed()
     end
 
-    if frame.dynamicTextCodesFrame  then
+    if frame.dynamicTextCodesFrame then
       frame.dynamicTextCodesFrame:Hide()
     end
 
@@ -215,7 +215,7 @@ function OptionsPrivate.CreateFrame()
 
   local function commitWindowChanges()
     if not frame.minimized then
-      local xOffset = frame:GetRight()-(frame:GetWidth()/2)
+      local xOffset = frame:GetRight() - (frame:GetWidth() / 2)
       local yOffset = frame:GetTop()
       odb.frame = odb.frame or {}
       odb.frame.xOffset = xOffset
@@ -246,7 +246,7 @@ function OptionsPrivate.CreateFrame()
     if self.minimized then
       WeakAurasOptionsTitleText:Hide()
       self.buttonsContainer.frame:Hide()
-      for _, fn in ipairs({"TexturePicker", "IconPicker", "ModelPicker", "ImportExport", "TextEditor", "CodeReview", "UpdateFrame", "DebugLog"}) do
+      for _, fn in ipairs({ "TexturePicker", "IconPicker", "ModelPicker", "ImportExport", "TextEditor", "CodeReview", "UpdateFrame", "DebugLog" }) do
         local obj = OptionsPrivate[fn](self, true)
         if obj then
           obj.frame:Hide()
@@ -279,14 +279,14 @@ function OptionsPrivate.CreateFrame()
         self:HideTip()
       end
       local widgets = {
-        { window = "texture",      title = L["Texture Picker"],       fn = "TexturePicker" },
-        { window = "icon",         title = L["Icon Picker"],          fn = "IconPicker" },
-        { window = "model",        title = L["Model Picker"],         fn = "ModelPicker" },
-        { window = "importexport", title = L["Import / Export"],      fn = "ImportExport" },
-        { window = "texteditor",   title = L["Code Editor"],          fn = "TextEditor" },
-        { window = "codereview",   title = L["Custom Code Viewer"],   fn = "CodeReview" },
-        { window = "debuglog",     title = L["Debug Log"],            fn = "DebugLog" },
-        { window = "update",       title = L["Update"],               fn = "UpdateFrame" },
+        { window = "texture",      title = L["Texture Picker"],     fn = "TexturePicker" },
+        { window = "icon",         title = L["Icon Picker"],        fn = "IconPicker" },
+        { window = "model",        title = L["Model Picker"],       fn = "ModelPicker" },
+        { window = "importexport", title = L["Import / Export"],    fn = "ImportExport" },
+        { window = "texteditor",   title = L["Code Editor"],        fn = "TextEditor" },
+        { window = "codereview",   title = L["Custom Code Viewer"], fn = "CodeReview" },
+        { window = "debuglog",     title = L["Debug Log"],          fn = "DebugLog" },
+        { window = "update",       title = L["Update"],             fn = "UpdateFrame" },
       }
 
       for _, widget in ipairs(widgets) do
@@ -411,7 +411,9 @@ function OptionsPrivate.CreateFrame()
   urlWidget:SetFont(STANDARD_TEXT_FONT, 12, "")
   urlWidget:SetPoint("TOPLEFT", tipPopupLabelK, "BOTTOMLEFT", 6, 0)
   urlWidget:SetPoint("TOPRIGHT", tipPopupLabelK, "BOTTOMRIGHT", 0, 0)
-  urlWidget:SetScript("OnChar", function() urlWidget:SetText(urlWidget.text); urlWidget:HighlightText(); end);
+  urlWidget:SetScript("OnChar", function()
+    urlWidget:SetText(urlWidget.text); urlWidget:HighlightText();
+  end);
   urlWidget:SetScript("OnMouseUp", function() urlWidget:HighlightText(); end);
   urlWidget:SetScript("OnEscapePressed", function() tipPopup:Hide() end)
   urlWidget:SetHeight(34)
@@ -447,8 +449,9 @@ function OptionsPrivate.CreateFrame()
 
     tipPopup:SetWidth(width)
     tipPopup:Show()
-    tipPopup:SetHeight(26 + tipPopupTitle:GetHeight() + tipPopupLabel:GetHeight() + tipPopupLabelCJ:GetHeight() + tipPopupLabelK:GetHeight()
-                       + urlWidget:GetHeight() + tipPopupCtrlC:GetHeight())
+    tipPopup:SetHeight(26 + tipPopupTitle:GetHeight() + tipPopupLabel:GetHeight() + tipPopupLabelCJ:GetHeight() +
+      tipPopupLabelK:GetHeight()
+      + urlWidget:GetHeight() + tipPopupCtrlC:GetHeight())
     -- This does somehow fix an issue where the first popup after a game restart doesn't show up.
     -- This isn't reproducable after a simple ui reload, so no idea what goes wrong, but with this line here,
     -- it seems to work.
@@ -494,16 +497,16 @@ function OptionsPrivate.CreateFrame()
   end
 
   local thanksList = L["We thank"] .. "\n"
-                     .. L["All maintainers of the libraries we use, especially:"] .. "\n"
-                     .. "• " .. L["Ace: Funkeh, Nevcairiel"] .. "\n"
-                     .. "• " .. L["LibCompress: Galmok"]  .. "\n"
-                     .. "• " .. L["LibCustomGlow: Dooez"] .. "\n"
-                     .. "• " .. L["LibDeflate: Yoursafety"] .. "\n"
-                     .. "• " .. L["LibDispel: Simpy"] .. "\n"
-                     .. "• " .. L["LibSerialize: Sanjo"] .. "\n"
-                     .. "• " .. L["LibSpecialization: Funkeh"] .. "\n"
-                     .. "• " .. L["Our translators (too many to name)"] .. "\n"
-                     .. "• " .. L["And our Patreons, Discord Regulars and Subscribers, and Friends of the Addon:"] .. "\n"
+      .. L["All maintainers of the libraries we use, especially:"] .. "\n"
+      .. "• " .. L["Ace: Funkeh, Nevcairiel"] .. "\n"
+      .. "• " .. L["LibCompress: Galmok"] .. "\n"
+      .. "• " .. L["LibCustomGlow: Dooez"] .. "\n"
+      .. "• " .. L["LibDeflate: Yoursafety"] .. "\n"
+      .. "• " .. L["LibDispel: Simpy"] .. "\n"
+      .. "• " .. L["LibSerialize: Sanjo"] .. "\n"
+      .. "• " .. L["LibSpecialization: Funkeh"] .. "\n"
+      .. "• " .. L["Our translators (too many to name)"] .. "\n"
+      .. "• " .. L["And our Patreons, Discord Regulars and Subscribers, and Friends of the Addon:"] .. "\n"
 
   thanksList = thanksList .. lineWrapDiscordList(OptionsPrivate.Private.DiscordList)
 
@@ -511,18 +514,20 @@ function OptionsPrivate.CreateFrame()
   local thanksListCJ = lineWrapDiscordList(OptionsPrivate.Private.DiscordListCJ)
   local thanksListK = lineWrapDiscordList(OptionsPrivate.Private.DiscordListK)
 
-  local discordButton = addFooter(L["Discord"], [[Interface\AddOns\WeakAuras\Media\Textures\discord.tga]], "https://discord.gg/weakauras",
-            L["Chat with WeakAuras experts on our Discord server."])
+  local discordButton = addFooter(L["Discord"], [[Interface\AddOns\WeakAuras\Media\Textures\discord.tga]],
+    "https://discord.gg/weakauras",
+    L["Chat with WeakAuras experts on our Discord server."])
   discordButton:SetParent(tipFrame)
   discordButton:SetPoint("LEFT", tipFrame, "LEFT")
 
-  local documentationButton = addFooter(L["Documentation"], [[Interface\AddOns\WeakAuras\Media\Textures\GitHub.tga]], "https://github.com/WeakAuras/WeakAuras2/wiki",
-            L["Check out our wiki for a large collection of examples and snippets."])
+  local documentationButton = addFooter(L["Documentation"], [[Interface\AddOns\WeakAuras\Media\Textures\GitHub.tga]],
+    "https://github.com/WeakAuras/WeakAuras2/wiki",
+    L["Check out our wiki for a large collection of examples and snippets."])
   documentationButton:SetParent(tipFrame)
   documentationButton:SetPoint("LEFT", discordButton, "RIGHT", footerSpacing, 0)
 
   local thanksButton = addFooter(L["Thanks"], [[Interface\AddOns\WeakAuras\Media\Textures\waheart.tga]],
-                                 "https://www.patreon.com/WeakAuras", thanksList, thanksListCJ, thanksListK, nil, 800)
+    "https://www.patreon.com/WeakAuras", thanksList, thanksListCJ, thanksListK, nil, 800)
   thanksButton:SetParent(tipFrame)
   thanksButton:SetPoint("LEFT", documentationButton, "RIGHT", footerSpacing, 0)
 
@@ -535,25 +540,27 @@ function OptionsPrivate.CreateFrame()
     end
 
     local changelogButton = addFooter(L["Changelog"], "", OptionsPrivate.changelog.fullChangeLogUrl,
-                                      changelog, nil, nil, false, 800)
+      changelog, nil, nil, false, 800)
     changelogButton:SetParent(tipFrame)
     changelogButton:SetPoint("LEFT", thanksButton, "RIGHT", footerSpacing, 0)
   end
 
-  local reportbugButton = addFooter(L["Found a Bug?"], [[Interface\AddOns\WeakAuras\Media\Textures\bug_report.tga]], "https://github.com/WeakAuras/WeakAuras2/issues/new?template=bug_report.yml",
-            L["Report bugs on our issue tracker."], nil, nil, true)
+  local reportbugButton = addFooter(L["Found a Bug?"], [[Interface\AddOns\WeakAuras\Media\Textures\bug_report.tga]],
+    "https://github.com/WeakAuras/WeakAuras2/issues/new?template=bug_report.yml",
+    L["Report bugs on our issue tracker."], nil, nil, true)
   reportbugButton:SetParent(tipFrame)
   reportbugButton:SetPoint("RIGHT", tipFrame, "RIGHT")
 
   local wagoButton = addFooter(L["Find Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wago.tga]], "https://wago.io",
-            L["Browse Wago, the largest collection of auras."], nil, nil, true)
+    L["Browse Wago, the largest collection of auras."], nil, nil, true)
   wagoButton:SetParent(tipFrame)
   wagoButton:SetPoint("RIGHT", reportbugButton, "LEFT", -footerSpacing, 0)
 
   local companionButton
   if not OptionsPrivate.Private.CompanionData.slugs then
-    companionButton = addFooter(L["Update Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]], "https://weakauras.wtf",
-            L["Keep your Wago imports up to date with the Companion App."])
+    companionButton = addFooter(L["Update Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]],
+      "https://weakauras.wtf",
+      L["Keep your Wago imports up to date with the Companion App."])
     companionButton:SetParent(tipFrame)
     companionButton:SetPoint("RIGHT", wagoButton, "LEFT", -footerSpacing, 0)
   end
@@ -666,6 +673,7 @@ function OptionsPrivate.CreateFrame()
       self.redo:SetDisabled(OptionsPrivate.Private.TimeMachine:DescribeNext() == nil)
     end)
   end
+
   tmControls:Step()
   OptionsPrivate.Private.TimeMachine.sub:AddSubscriber("Step", tmControls)
 
@@ -735,7 +743,7 @@ function OptionsPrivate.CreateFrame()
 
   local loadProgress = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
   loadProgress:SetPoint("TOP", buttonsContainer.frame, "TOP", 0, -4)
-  loadProgress:SetText(L["Creating options: "].."0/0")
+  loadProgress:SetText(L["Creating options: "] .. "0/0")
   frame.loadProgress = loadProgress
 
   frame.SetLoadProgressVisible = function(self, visible)
@@ -980,7 +988,8 @@ function OptionsPrivate.CreateFrame()
   sidegroup.frame:Show()
   sidegroup:SetLayout("flow")
 
-  local dynamicTextCodesFrame = CreateFrame("Frame", "WeakAurasTextReplacements", sidegroup.frame, "PortraitFrameTemplate")
+  local dynamicTextCodesFrame = CreateFrame("Frame", "WeakAurasTextReplacements", sidegroup.frame,
+    "PortraitFrameTemplate")
   dynamicTextCodesFrame.Bg:SetColorTexture(unpack(frame.Bg.colorTexture))
   ButtonFrameTemplate_HidePortrait(dynamicTextCodesFrame)
   dynamicTextCodesFrame:SetPoint("TOPLEFT", sidegroup.frame, "TOPRIGHT", 20, 0)
@@ -1058,9 +1067,9 @@ function OptionsPrivate.CreateFrame()
     -- ignore the ToggleButton if it is directly after the  OnEditFocusLost
     local currentTime = GetTime()
     if event == "ToggleButton"
-      and dynamicTextCodesFrame.lastCaller
-      and dynamicTextCodesFrame.lastCaller.event == "OnEditFocusLost"
-      and currentTime - dynamicTextCodesFrame.lastCaller.time < 0.2
+        and dynamicTextCodesFrame.lastCaller
+        and dynamicTextCodesFrame.lastCaller.event == "OnEditFocusLost"
+        and currentTime - dynamicTextCodesFrame.lastCaller.time < 0.2
     then
       return
     end
@@ -1122,7 +1131,7 @@ function OptionsPrivate.CreateFrame()
       end
     end
     if (type(self.pickedDisplay) == "string" and self.pickedDisplay == id)
-       or (type(self.pickedDisplay) == "table" and id == tempGroup.id)
+        or (type(self.pickedDisplay) == "table" and id == tempGroup.id)
     then
       frame:UpdateOptions()
     end
@@ -1160,7 +1169,7 @@ function OptionsPrivate.CreateFrame()
       local optionsGenerator =
       {
         group = OptionsPrivate.GetGroupOptions,
-        region =  OptionsPrivate.GetDisplayOptions,
+        region = OptionsPrivate.GetDisplayOptions,
         trigger = OptionsPrivate.GetTriggerOptions,
         conditions = OptionsPrivate.GetConditionOptions,
         load = OptionsPrivate.GetLoadOptions,
@@ -1206,18 +1215,18 @@ function OptionsPrivate.CreateFrame()
     tabsWidget = AceGUI:Create("TabGroup")
 
     local tabs = {
-      { value = "region", text = L["Display"]},
-      { value = "trigger", text = L["Trigger"]},
-      { value = "conditions", text = L["Conditions"]},
-      { value = "action", text = L["Actions"]},
-      { value = "animation", text = L["Animations"]},
-      { value = "load", text = L["Load"]},
-      { value = "authorOptions", text = L["Custom Options"]},
-      { value = "information", text = L["Information"]},
+      { value = "region",        text = L["Display"] },
+      { value = "trigger",       text = L["Trigger"] },
+      { value = "conditions",    text = L["Conditions"] },
+      { value = "action",        text = L["Actions"] },
+      { value = "animation",     text = L["Animations"] },
+      { value = "load",          text = L["Load"] },
+      { value = "authorOptions", text = L["Custom Options"] },
+      { value = "information",   text = L["Information"] },
     }
     -- Check if group and not the temp group
     if data.controlledChildren and type(data.id) == "string" then
-      tinsert(tabs, 1, { value = "group", text = L["Group"]})
+      tinsert(tabs, 1, { value = "group", text = L["Group"] })
     end
 
     tabsWidget:SetTabs(tabs)
@@ -1229,9 +1238,9 @@ function OptionsPrivate.CreateFrame()
     tabsWidget:AddChild(group)
 
     tabsWidget:SetCallback("OnGroupSelected", function(self, event, tab)
-        frame.selectedTab = tab
-        frame:FillOptions()
-      end)
+      frame.selectedTab = tab
+      frame:FillOptions()
+    end)
 
     AceConfigDialog:Open("WeakAuras", group)
     tabsWidget:SetTitle("")
@@ -1418,7 +1427,7 @@ function OptionsPrivate.CreateFrame()
         local regionData = OptionsPrivate.Private.regionOptions[regionType]
         local button = AceGUI:Create("WeakAurasNewButton")
         button:SetTitle(regionData.displayName)
-        if(type(regionData.icon) == "string" or type(regionData.icon) == "table") then
+        if (type(regionData.icon) == "string" or type(regionData.icon) == "table") then
           button:SetIcon(regionData.icon)
         end
         button:SetDescription(regionData.description)
@@ -1450,7 +1459,7 @@ function OptionsPrivate.CreateFrame()
 
     local data = {
       outline = false,
-      color = {1, 1, 1, 1},
+      color = { 1, 1, 1, 1 },
       justify = "CENTER",
       font = "Friz Quadrata TT",
       fontSize = 8,
@@ -1546,7 +1555,8 @@ function OptionsPrivate.CreateFrame()
 
   frame.CenterOnPicked = function(self)
     if self.pickedDisplay then
-      local centerId = type(self.pickedDisplay) == "string" and self.pickedDisplay or self.pickedDisplay.controlledChildren[1]
+      local centerId = type(self.pickedDisplay) == "string" and self.pickedDisplay or
+          self.pickedDisplay.controlledChildren[1]
 
       if displayButtons[centerId] then
         local _, _, _, _, yOffset = displayButtons[centerId].frame:GetPoint(1)
@@ -1610,7 +1620,7 @@ function OptionsPrivate.CreateFrame()
 
   frame:SetClampedToScreen(true)
   local w, h = frame:GetSize()
-  local left, right, top, bottom = w/2,-w/2, 0, h-25
+  local left, right, top, bottom = w / 2, -w / 2, 0, h - 25
   frame:SetClampRectInsets(left, right, top, bottom)
 
   return frame

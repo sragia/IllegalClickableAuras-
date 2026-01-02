@@ -32,7 +32,7 @@ end
 
 ---@param id string
 function Features:Enabled(id)
-    return self.hydrated and self:Exists(id) and self.__feats[id].enabled
+  return self.hydrated and self:Exists(id) and self.__feats[id].enabled
 end
 
 ---@param id string
@@ -160,13 +160,11 @@ function Features:Subscribe(id, enable, disable)
   end
 end
 
-
 Features:Register({
   id = "debug",
-  autoEnable = {"dev"}
+  autoEnable = { "dev" }
 })
 
 Private.DebugPrint = Features:Wrap("debug", function(...)
   print("|cff00d3ffWeakAuras-Debug:|r ", ...)
 end)
-

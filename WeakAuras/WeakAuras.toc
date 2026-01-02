@@ -1,5 +1,5 @@
-## Interface: 110207
-## Title: WeakAuras
+## Interface: 120000
+## Title: WeakAuras (Exality Fork)
 ## Author: The WeakAuras Team
 ## Version: @project-version@
 ## IconTexture: Interface\AddOns\WeakAuras\Media\Textures\icon.blp
@@ -29,7 +29,6 @@ Libs\TaintLess\TaintLess.xml
 
 # Client flavor specific libs
 Libs\LibSpecialization\LibSpecialization.lua
-Libs\LibDispel\LibDispel.lua
 
 Init.lua
 Compatibility.lua

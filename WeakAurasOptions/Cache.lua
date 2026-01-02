@@ -23,7 +23,7 @@ local bestIcon = {}
 -- Builds a cache of name/icon pairs from existing spell data
 -- This is a rather slow operation, so it's only done once, and the result is subsequently saved
 function spellCache.Build()
-  if not cache  then
+  if not cache then
     error("spellCache has not been loaded. Call WeakAuras.spellCache.Load(...) first.")
   end
 
@@ -75,7 +75,7 @@ function spellCache.Build()
       local name = OptionsPrivate.Private.ExecEnv.GetSpellName(id)
       local icon = OptionsPrivate.Private.ExecEnv.GetSpellIcon(id)
 
-      if(icon == 136243) then -- 136243 is the a gear icon, we can ignore those spells
+      if (icon == 136243) then -- 136243 is the a gear icon, we can ignore those spells
         misses = 0;
       elseif name and name ~= "" and icon then
         cache[name] = cache[name] or {}
@@ -99,7 +99,7 @@ function spellCache.Build()
       for _, category in pairs(GetCategoryList()) do
         local total = GetCategoryNumAchievements(category, true)
         for i = 1, total do
-          local id,name,_,_,_,_,_,_,_,iconID = GetAchievementInfo(category, i)
+          local id, name, _, _, _, _, _, _, _, iconID = GetAchievementInfo(category, i)
           if name and iconID then
             cache[name] = cache[name] or {}
             if not cache[name].achievements or cache[name].achievements == "" then
@@ -117,7 +117,7 @@ function spellCache.Build()
     metaData.needsRebuild = false
     metaData.rebuilding = false
   end)
-  OptionsPrivate.Private.Threads:Add("spellCache", co, 'background')
+  -- OptionsPrivate.Private.Threads:Add("spellCache", co, 'background')
 end
 
 --[[ function to help find big holes in spellIds to help speedup Build()
@@ -168,7 +168,7 @@ function spellCache.GetIcon(name)
         end
       end
     elseif metaData.rebuilding then
-      OptionsPrivate.Private.Threads:SetPriority('spellCache', 'normal')
+      -- OptionsPrivate.Private.Threads:SetPriority('spellCache', 'normal')
     end
 
     bestIcon[name] = bestMatch
@@ -190,7 +190,7 @@ function spellCache.GetSpellsMatching(name)
       return result
     end
   elseif metaData.rebuilding then
-    OptionsPrivate.Private.Threads:SetPriority('spellCache', 'normal')
+    -- OptionsPrivate.Private.Threads:SetPriority('spellCache', 'normal')
   end
 end
 
@@ -227,12 +227,12 @@ function spellCache.Load(data)
   local version = WeakAuras.versionString
 
   local num = 0;
-  for i,v in pairs(cache) do
+  for i, v in pairs(cache) do
     num = num + 1;
   end
 
-  if(num < 39000 or metaData.locale ~= locale or metaData.build ~= build
-     or metaData.version ~= version or not metaData.spellCacheStrings)
+  if (num < 39000 or metaData.locale ~= locale or metaData.build ~= build
+        or metaData.version ~= version or not metaData.spellCacheStrings)
   then
     metaData.build = build;
     metaData.locale = locale;
@@ -249,18 +249,18 @@ end
 -- spell names that are very similar to the name of the texture
 local function Lev(str1, str2)
   local matrix = {};
-  for i=0, str1:len() do
-    matrix[i] = {[0] = i};
+  for i = 0, str1:len() do
+    matrix[i] = { [0] = i };
   end
-  for j=0, str2:len() do
+  for j = 0, str2:len() do
     matrix[0][j] = j;
   end
-  for j=1, str2:len() do
-    for i =1, str1:len() do
-      if(str1:sub(i, i) == str2:sub(j, j)) then
-        matrix[i][j] = matrix[i-1][j-1];
+  for j = 1, str2:len() do
+    for i = 1, str1:len() do
+      if (str1:sub(i, i) == str2:sub(j, j)) then
+        matrix[i][j] = matrix[i - 1][j - 1];
       else
-        matrix[i][j] = math.min(matrix[i-1][j], matrix[i][j-1], matrix[i-1][j-1]) + 1;
+        matrix[i][j] = math.min(matrix[i - 1][j], matrix[i][j - 1], matrix[i - 1][j - 1]) + 1;
       end
     end
   end
@@ -279,13 +279,13 @@ function spellCache.BestKeyMatch(nearkey)
     if key:lower() == nearkey:lower() then
       return key
     end
-    if(key:lower():find(nearkey:lower(), 1, true)) then
+    if (key:lower():find(nearkey:lower(), 1, true)) then
       partialMatches[key] = value;
     end
   end
   for key, value in pairs(partialMatches) do
     local distance = Lev(nearkey, key);
-    if(distance < bestDistance) then
+    if (distance < bestDistance) then
       bestKey = key;
       bestDistance = distance;
     end
@@ -305,9 +305,9 @@ function spellCache.CorrectAuraName(input)
   if type(input) == "string" and input:find("|", nil, true) then
     spellId = WeakAuras.SafeToNumber(input:match("|Hspell:(%d+)"))
   end
-  if(spellId) then
+  if (spellId) then
     local name, _, icon = OptionsPrivate.Private.ExecEnv.GetSpellInfo(spellId);
-    if(name) then
+    if (name) then
       spellCache.AddIcon(name, spellId, icon)
       return name, spellId;
     else
@@ -315,7 +315,7 @@ function spellCache.CorrectAuraName(input)
     end
   else
     local ret = spellCache.BestKeyMatch(input);
-    if(ret == "") then
+    if (ret == "") then
       return "No Match Found", nil;
     else
       return ret, nil;
