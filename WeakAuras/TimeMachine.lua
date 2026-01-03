@@ -2,7 +2,6 @@
 local AddonName = ...
 ---@class Private
 local Private = select(2, ...)
-print('2')
 Private.Features:Register({
   id = "undo",
   autoEnable = { "dev", "pr", "alpha" },
@@ -228,7 +227,7 @@ end
 function TimeMachine:StartTransaction()
   if self.transaction then
     WeakAuras.prettyPrint(
-    "If you're reading this, a time machine transaction was started, but there was already one in  progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
+      "If you're reading this, a time machine transaction was started, but there was already one in  progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
     self:Reject()
   end
   self.transaction = true
@@ -291,7 +290,7 @@ end
 function TimeMachine:Commit(instant)
   if not self.transaction and not instant then
     WeakAuras.prettyPrint(
-    "If you're reading this, a time machine transaction was committed, but there was no transaction in progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
+      "If you're reading this, a time machine transaction was committed, but there was no transaction in progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
     return
   end
   while self.index < #self.changes do
@@ -376,12 +375,13 @@ end
 function TimeMachine:DestroyTheUniverse(id)
   if self.transaction then
     WeakAuras.prettyPrint(
-    "If you're reading this, a time machine transaction was destroyed, but there was one in progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
+      "If you're reading this, a time machine transaction was destroyed, but there was one in progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
     self:Reject()
   end
   if #self.changes > 0 then
     Private.DebugPrint(string.format(
-    "Destroying the universe where %i change(s) happpened, because an unexpected change happened to %q.", #self.changes,
+      "Destroying the universe where %i change(s) happpened, because an unexpected change happened to %q.", #self
+      .changes,
       id))
   end
   self.changes = {}
