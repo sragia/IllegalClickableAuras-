@@ -2107,7 +2107,6 @@ function Private.LoadDisplays(toLoad, ...)
     end
   end
   for _, triggerSystem in pairs(triggerSystems) do
-    DevTool:AddData(triggerSystem)
     triggerSystem.LoadDisplays(toLoad, ...);
   end
   -- for id in pairs(toLoad) do

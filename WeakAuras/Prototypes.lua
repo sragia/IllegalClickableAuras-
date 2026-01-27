@@ -21,59 +21,6 @@ local MAX_NUM_TALENTS = MAX_NUM_TALENTS or 20
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
-local LibRangeCheck = LibStub("LibRangeCheck-3.0")
-
-function WeakAuras.GetRange(unit, checkVisible)
-  return LibRangeCheck:GetRange(unit, checkVisible);
-end
-
-function WeakAuras.CheckRange(unit, range, operator)
-  local min, max = LibRangeCheck:GetRange(unit, true);
-  if (type(range) ~= "number") then
-    range = tonumber(range);
-  end
-  if (not range) then
-    return
-  end
-  if (operator == "<=") then
-    return (max or 999) <= range;
-  else
-    return (min or 0) >= range;
-  end
-end
-
-local RangeCacheStrings = { friend = "", harm = "", misc = "" }
-local function RangeCacheUpdate()
-  local friend, harm, misc = {}, {}, {}
-  local friendString, harmString, miscString
-
-  for range in LibRangeCheck:GetFriendCheckers() do
-    tinsert(friend, range)
-  end
-  tsort(friend)
-  for range in LibRangeCheck:GetHarmCheckers() do
-    tinsert(harm, range)
-  end
-  tsort(harm)
-  for range in LibRangeCheck:GetMiscCheckers() do
-    tinsert(misc, range)
-  end
-  tsort(misc)
-
-  for _, key in pairs(friend) do
-    friendString = (friendString and (friendString .. ", ") or "") .. key
-  end
-  for _, key in pairs(harm) do
-    harmString = (harmString and (harmString .. ", ") or "") .. key
-  end
-  for _, key in pairs(misc) do
-    miscString = (miscString and (miscString .. ", ") or "") .. key
-  end
-  RangeCacheStrings.friend, RangeCacheStrings.harm, RangeCacheStrings.misc = friendString, harmString, miscString
-end
-
-LibRangeCheck:RegisterCallback(LibRangeCheck.CHECKERS_CHANGED, RangeCacheUpdate)
-
 function WeakAuras.UnitDetailedThreatSituation(unit1, unit2)
   local ok, aggro, status, threatpct, rawthreatpct, threatvalue = pcall(UnitDetailedThreatSituation, unit1, unit2)
   if ok then
